@@ -1,108 +1,59 @@
-# 🎧 Model Card: VibeRank 1.0
+# 🎧 Model Card: VibeRank 2.0
 
 ## 1. Model Name
 
-**VibeRank 1.0**
+**VibeRank 2.0**
 
-VibeRank is a small content-based music recommendation simulation that ranks songs according to a listener's stated preferences.
+VibeRank is a content-based music recommendation simulation with selectable ranking strategies, diversity reranking, and transparent explanations.
 
 ---
 
-## 2. Goal, Intended Use, and Non-Intended Use
+## 2. Goal and Intended Use
 
-### Goal / Task
+### Goal
 
-VibeRank predicts which songs may best match a user's current music preferences. It compares each song with the user's favorite genre, favorite mood, target energy, and acoustic preference.
+VibeRank suggests songs that may match a listener's current preferences.
 
-### Intended Use
+It compares each song with:
 
-VibeRank is designed for classroom exploration. It demonstrates how a recommendation system converts data into scores and ranked results.
+- Favorite genre
+- Favorite mood
+- Target energy
+- Acoustic preference
+- Target popularity
+- Preferred decade
+- Target instrumentalness
+- Target speechiness
+- Target duration
+
+### Intended use
+
+VibeRank is designed for classroom exploration.
 
 It can be used to:
 
-- Test different user profiles
-- Compare recommendation results
-- Study how feature weights affect rankings
-- Explore bias and filter bubbles
+- Demonstrate content-based recommendation
+- Compare user profiles
+- Study feature weights
+- Compare ranking strategies
+- Explore diversity and filter bubbles
+- Practice transparent AI documentation
 
-### Non-Intended Use
+### Non-intended use
 
-VibeRank should not be used as a real commercial music recommendation service. It should not be used to make strong claims about a person's complete musical taste.
+VibeRank should not be used as a commercial recommendation service.
 
-The dataset is small and fictional. The system does not learn from real listening behavior, and it cannot understand personal, cultural, or emotional context.
-
-## 3. How the Model Works
-
-VibeRank uses content-based filtering. Instead of comparing the user with other listeners, it compares the user's stated preferences directly with the attributes of each song.
-
-Each song is evaluated using four scoring components:
-
-| Feature | Maximum Points |
-|---|---:|
-| Genre match | 35 |
-| Mood match | 25 |
-| Energy similarity | 25 |
-| Acoustic preference | 15 |
-| **Total** | **100** |
-
-Genre and mood use exact matching. A song receives the full number of points when its genre or mood matches the user profile.
-
-Energy uses numerical similarity. Songs receive more points when their energy value is closer to the user's target energy. This prevents the model from simply rewarding songs for being more energetic.
-
-Acousticness is handled according to the user's preference. If the user likes acoustic music, songs with higher acousticness receive more points. If the user prefers non-acoustic music, songs with lower acousticness receive more points.
-
-The system scores every song, sorts the catalog from highest score to lowest score, and returns the top results. Each recommendation also includes an explanation showing how many points came from each feature.
-
-The starter project originally contained placeholder functions. I implemented CSV loading, numerical type conversion, weighted scoring, explanation generation, sorting, and command-line output.
+It should not be used to make strong claims about a person's identity or complete musical taste. The data is fictional, small, and manually created.
 
 ---
 
-## 4. Data
+## 3. Data
 
-The catalog contains **20 fictional songs**.
+The system uses `data/songs.csv`.
 
-The original starter dataset contained 10 songs. I added 10 more songs to increase the number of represented genres and moods.
+The catalog contains **20 fictional songs** and **15 columns**.
 
-The catalog includes the following genres:
-
-- Pop
-- Lofi
-- Rock
-- Ambient
-- Jazz
-- Synthwave
-- Indie pop
-- Hip-hop
-- EDM
-- Classical
-- Folk
-- R&B
-- Metal
-- Reggae
-- Country
-- Latin
-- Blues
-
-The moods include:
-
-- Happy
-- Chill
-- Intense
-- Relaxed
-- Moody
-- Focused
-- Confident
-- Euphoric
-- Peaceful
-- Warm
-- Romantic
-- Aggressive
-- Joyful
-- Nostalgic
-- Celebratory
-- Sad
-
-Each song contains:
+### Basic attributes
 
 - ID
 - Title
@@ -110,295 +61,353 @@ Each song contains:
 - Genre
 - Mood
 - Energy
-- Tempo in beats per minute
+- Tempo
 - Valence
 - Danceability
 - Acousticness
 
-The current scoring system uses genre, mood, energy, and acousticness. Tempo, valence, and danceability are stored in the dataset but are not yet included in the default score.
+### Five additional AI-assisted attributes
 
-The feature values were manually assigned for this simulation. They were not calculated by analyzing real audio files.
+- Popularity
+- Release decade
+- Instrumentalness
+- Speechiness
+- Duration in seconds
 
----
+Popularity ranges from 0 to 100.
 
-## 5. Strengths
+Energy, valence, danceability, acousticness, instrumentalness, and speechiness range from 0.0 to 1.0.
 
-The model performs well when the dataset contains a song that matches most or all of the user's preferences.
+The catalog includes pop, lofi, rock, ambient, jazz, synthwave, indie pop, hip-hop, EDM, classical, folk, R&B, metal, reggae, country, Latin, and blues.
 
-For example, `Sunrise City` is a strong recommendation for the High-Energy Pop profile because it matches the requested genre and mood, has energy close to the user's target, and has low acousticness.
+### Data limitations
 
-The numerical energy comparison works better than an exact-match rule. A song with energy of `0.82` can still strongly match a target energy of `0.80`.
+Most genres contain only one song. The feature values are manually assigned and are not extracted from real recordings.
 
-The generated explanations make the system transparent. A user can see exactly why a song ranked highly and how much each feature contributed to the score.
-
-The different test profiles also produced noticeably different results. High-energy profiles favored energetic and non-acoustic songs, while the Chill Lofi profile favored calm songs with greater acousticness.
-
----
-
-## 6. Limitations and Bias
-
-The recommender uses exact text matching for genre and mood. Related genres such as `pop` and `indie pop` are treated as completely different. This caused `Rooftop Lights` to receive no genre points for the pop profile, even though many listeners would consider indie pop closely related to pop.
-
-The dataset contains only 20 fictional songs, and most genres have only one example. This means some user profiles have very few realistic choices, and one song may automatically dominate a genre.
-
-Fixed feature weights can create unintuitive recommendations when preferences conflict. The Conflicting Classical Workout profile ranked a peaceful, low-energy classical song first because its genre and acousticness points outweighed its poor mood and energy match.
-
-The model may also create a filter bubble because it repeatedly rewards songs that match the user's existing preferences. It does not deliberately encourage discovery or introduce unfamiliar genres.
-
-The system does not consider:
-
-- Lyrics or language
-- Listening history
-- Likes, skips, or replays
-- Artist preferences
-- Time of day
-- Activity or location
-- Cultural context
-- Changes in musical taste
-- Whether the user wants familiar or surprising music
+The catalog is too small to represent the full variety of music or listeners.
 
 ---
 
-## 7. Evaluation
+## 4. Algorithm Summary
 
-I evaluated the recommender using four different user profiles:
+VibeRank uses content-based filtering.
+
+It scores every song against the user profile. It then sorts the songs and applies a diversity reranking step.
+
+The default score uses nine components:
+
+1. Genre match
+2. Mood match
+3. Energy similarity
+4. Acoustic preference
+5. Popularity similarity
+6. Release-decade similarity
+7. Instrumentalness similarity
+8. Speechiness similarity
+9. Duration similarity
+
+Genre and mood use exact matching.
+
+Numerical features use similarity. A song earns more points when its value is closer to the user's target.
+
+Every strategy provides feature weights that total 100 points.
+
+The scoring function returns a numeric score and a list of reasons. The reasons explain every component of the score.
+
+---
+
+## 5. Ranking Strategies
+
+VibeRank uses the **Strategy design pattern**.
+
+The shared `RankingStrategy` interface allows several weighting systems to be used without changing the scoring loop.
+
+### Balanced
+
+Balanced mode spreads weight across all nine features.
+
+### Genre-first
+
+Genre-first mode gives the largest weight to an exact genre match.
+
+### Mood-first
+
+Mood-first mode gives the largest weight to an exact mood match.
+
+### Energy-first
+
+Energy-first mode gives the largest weight to energy similarity.
+
+Users select a strategy in `main.py`:
+
+```bash
+python -m src.main --mode balanced
+python -m src.main --mode genre-first
+python -m src.main --mode mood-first
+python -m src.main --mode energy-first
+```
+
+This modular structure makes it easier to add another strategy later.
+
+---
+
+## 6. Diversity, Novelty, and Fairness
+
+VibeRank applies diversity reranking after base scoring.
+
+The system applies:
+
+- A 10-point penalty for a repeated artist
+- A 3-point penalty for a repeated genre
+
+The penalty increases when the artist or genre has already appeared more than once.
+
+Each penalty appears in the recommendation explanation.
+
+### Why this helps
+
+Without reranking, one artist or genre can dominate the top results. The penalty creates space for other artists and genres.
+
+This can reduce a narrow filter bubble and improve exposure to different music.
+
+### Tradeoff
+
+Diversity is not automatically the same as relevance. A slightly lower-scoring song may move above a closer match.
+
+Users can disable the feature:
+
+```bash
+python -m src.main --no-diversity
+```
+
+---
+
+## 7. Explanation and Transparency
+
+Each result contains:
+
+- The selected strategy
+- Genre points
+- Mood points
+- Energy points
+- Acoustic points
+- Popularity points
+- Decade points
+- Instrumentalness points
+- Speechiness points
+- Duration points
+- Any artist or genre repetition penalty
+
+The CLI displays these reasons in a formatted table.
+
+This makes the model easier to inspect than a recommendation with only a title and unexplained score.
+
+---
+
+## 8. Evaluation Process
+
+I evaluated the recommender with four profiles:
 
 1. High-Energy Pop
 2. Chill Lofi
 3. Deep Intense Rock
 4. Conflicting Classical Workout
 
-I checked whether the top songs matched my expectations and whether changing the user preferences produced meaningful changes in the rankings.
+I checked:
+
+- Whether all 20 songs loaded
+- Whether numeric fields had correct types
+- Whether scores were consistent
+- Whether rankings changed between profiles
+- Whether ranking modes changed scores
+- Whether diversity changed repeated-artist results
+- Whether every explanation matched the calculation
+- Whether automated tests passed
 
 ### High-Energy Pop
 
-This profile requested:
-
-- Genre: pop
-- Mood: happy
-- Target energy: 0.80
-- Non-acoustic music
-
 ```text
-1. Sunrise City by Neon Echo
-   Score: 96.80
-   Reasons: genre match (+35.00), mood match (+25.00),
-   energy similarity (+24.50), non-acoustic preference (+12.30)
-
-2. Gym Hero by Max Pulse
-   Score: 71.00
-   Reasons: genre match (+35.00), mood mismatch (+0.00),
-   energy similarity (+21.75), non-acoustic preference (+14.25)
-
-3. Rooftop Lights by Indigo Parade
-   Score: 58.75
-   Reasons: genre mismatch (+0.00), mood match (+25.00),
-   energy similarity (+24.00), non-acoustic preference (+9.75)
-
-4. City Cipher by Rhyme District
-   Score: 37.30
-   Reasons: genre mismatch (+0.00), mood mismatch (+0.00),
-   energy similarity (+23.50), non-acoustic preference (+13.80)
-
-5. Electric Horizon by Nova Circuit
-   Score: 35.80
-   Reasons: genre mismatch (+0.00), mood mismatch (+0.00),
-   energy similarity (+21.25), non-acoustic preference (+14.55)
+1. Sunrise City - 97.55
+2. Gym Hero - 78.23
+3. Rooftop Lights - 73.53
+4. Salsa Skyline - 61.04
+5. City Cipher - 60.07
 ```
 
-`Sunrise City` ranked first because it matched all major preferences.
+`Sunrise City` ranked first because it matched the requested pop genre and happy mood. It also closely matched energy, popularity, decade, instrumentalness, speechiness, and duration.
 
-`Gym Hero` ranked second even though its mood was intense because it matched the pop genre, had energy near the user's target, and strongly matched the non-acoustic preference.
-
-`Rooftop Lights` matched the happy mood and target energy, but its `indie pop` genre did not count as an exact match for `pop`.
+`Gym Hero` remained strong because it matched pop and several numeric targets. Its final result included a genre repetition penalty because a pop song had already been selected.
 
 ### Chill Lofi
 
-This profile requested:
-
-- Genre: lofi
-- Mood: chill
-- Target energy: 0.35
-- Acoustic music
-
 ```text
-1. Library Rain by Paper Lanterns
-   Score: 97.90
-   Reasons: genre match (+35.00), mood match (+25.00),
-   energy similarity (+25.00), acoustic preference (+12.90)
-
-2. Midnight Coding by LoRoom
-   Score: 93.90
-   Reasons: genre match (+35.00), mood match (+25.00),
-   energy similarity (+23.25), acoustic preference (+10.65)
-
-3. Focus Flow by LoRoom
-   Score: 70.45
-   Reasons: genre match (+35.00), mood mismatch (+0.00),
-   energy similarity (+23.75), acoustic preference (+11.70)
-
-4. Spacewalk Thoughts by Orbit Bloom
-   Score: 62.05
-   Reasons: genre mismatch (+0.00), mood match (+25.00),
-   energy similarity (+23.25), acoustic preference (+13.80)
-
-5. Coffee Shop Stories by Slow Stereo
-   Score: 37.85
-   Reasons: genre mismatch (+0.00), mood mismatch (+0.00),
-   energy similarity (+24.50), acoustic preference (+13.35)
+1. Library Rain - 98.06
+2. Midnight Coding - 91.85
+3. Spacewalk Thoughts - 71.08
+4. Focus Flow - 64.15
+5. Autumn Porch - 56.01
 ```
 
-`Library Rain` ranked first because it matched the genre and mood, exactly matched the target energy, and had high acousticness.
+This profile shifted toward low-energy, acoustic, and instrumental songs.
 
-Compared with High-Energy Pop, the Chill Lofi results shifted toward lower-energy and more acoustic music.
+`Library Rain` ranked first because its lofi genre, chill mood, energy, acousticness, instrumentalness, and duration closely matched the profile.
 
-`Spacewalk Thoughts` reached fourth place even though it was ambient because it matched the chill mood, low energy, and acoustic preference.
+Compared with High-Energy Pop, the output contained calmer and more acoustic music.
 
 ### Deep Intense Rock
 
-This profile requested:
-
-- Genre: rock
-- Mood: intense
-- Target energy: 0.92
-- Non-acoustic music
-
 ```text
-1. Storm Runner by Voltline
-   Score: 98.25
-   Reasons: genre match (+35.00), mood match (+25.00),
-   energy similarity (+24.75), non-acoustic preference (+13.50)
-
-2. Gym Hero by Max Pulse
-   Score: 64.00
-   Reasons: genre mismatch (+0.00), mood match (+25.00),
-   energy similarity (+24.75), non-acoustic preference (+14.25)
-
-3. Electric Horizon by Nova Circuit
-   Score: 38.80
-   Reasons: genre mismatch (+0.00), mood mismatch (+0.00),
-   energy similarity (+24.25), non-acoustic preference (+14.55)
-
-4. Iron Pulse by Gravel Crown
-   Score: 38.15
-   Reasons: genre mismatch (+0.00), mood mismatch (+0.00),
-   energy similarity (+23.75), non-acoustic preference (+14.40)
-
-5. City Cipher by Rhyme District
-   Score: 37.30
-   Reasons: genre mismatch (+0.00), mood mismatch (+0.00),
-   energy similarity (+23.50), non-acoustic preference (+13.80)
+1. Storm Runner - 98.50
+2. Gym Hero - 74.69
+3. Iron Pulse - 63.13
+4. Salsa Skyline - 59.14
+5. Electric Horizon - 58.45
 ```
 
-`Storm Runner` ranked first because it matched every major preference.
+This profile favored high energy and low acousticness.
 
-Compared with Chill Lofi, the results shifted toward higher-energy and less acoustic songs.
+`Storm Runner` matched the requested rock genre and intense mood. It also closely matched the numeric targets.
 
-`Gym Hero` ranked second despite being pop because it matched the intense mood and was extremely close to the target energy.
+Compared with Chill Lofi, the results moved toward faster and more aggressive songs.
 
 ### Conflicting Classical Workout
 
-This adversarial profile requested:
-
-- Genre: classical
-- Mood: aggressive
-- Target energy: 0.95
-- Acoustic music
-
 ```text
-1. Quiet Constellations by Elena Vale
-   Score: 56.45
-   Reasons: genre match (+35.00), mood mismatch (+0.00),
-   energy similarity (+6.75), acoustic preference (+14.70)
-
-2. Iron Pulse by Gravel Crown
-   Score: 50.10
-   Reasons: genre mismatch (+0.00), mood match (+25.00),
-   energy similarity (+24.50), acoustic preference (+0.60)
-
-3. Old Highway Home by June Hollow
-   Score: 27.80
-   Reasons: genre mismatch (+0.00), mood mismatch (+0.00),
-   energy similarity (+14.75), acoustic preference (+13.05)
-
-4. Autumn Porch by Willow Roads
-   Score: 26.85
-   Reasons: genre mismatch (+0.00), mood mismatch (+0.00),
-   energy similarity (+12.75), acoustic preference (+14.10)
-
-5. Salsa Skyline by Ritmo Solar
-   Score: 26.00
-   Reasons: genre mismatch (+0.00), mood mismatch (+0.00),
-   energy similarity (+23.75), acoustic preference (+2.25)
+1. Quiet Constellations - 64.36
+2. Iron Pulse - 58.92
+3. Autumn Porch - 50.86
+4. Focus Flow - 50.82
+5. Spacewalk Thoughts - 50.51
 ```
 
-No song matched all four preferences.
+This adversarial profile requested classical, aggressive, high-energy, and acoustic music.
 
-`Quiet Constellations` ranked first because its classical genre and high acousticness contributed almost 50 points. However, it had a peaceful mood and very low energy.
+No song matched all requirements.
 
-`Iron Pulse` ranked second because it matched the aggressive mood and target energy, but it was metal and almost completely non-acoustic.
+`Quiet Constellations` matched classical and strong instrumentalness, but it poorly matched the requested energy and mood.
 
-This was the most surprising result. It showed that the model can produce a mathematically valid ranking that may still feel inappropriate to a listener.
+`Iron Pulse` matched aggressive mood and high energy, but it did not match classical or acoustic preferences.
 
-### Profile Comparisons
-
-The High-Energy Pop and Chill Lofi profiles produced clearly different results. The pop profile favored energetic, electronically produced music, while the lofi profile favored calm and acoustic songs.
-
-The Chill Lofi and Deep Intense Rock profiles showed opposite patterns. Chill Lofi favored lower energy and higher acousticness, while Deep Intense Rock favored high energy and low acousticness.
-
-The Conflicting Classical Workout profile showed that the recommender cannot understand which preference is truly most important unless the weights explicitly define that priority.
-
-### Mood-Removal Experiment
-
-I temporarily changed the mood weight from 25 points to 0 points and reran all four profiles.
-
-For High-Energy Pop, `Rooftop Lights` dropped out of the top five because its happy mood no longer contributed 25 points. High-energy songs with low acousticness moved above it.
-
-For Chill Lofi, `Spacewalk Thoughts` dropped out of the top five because its chill mood had been one of its strongest matches. `Focus Flow` also moved above `Midnight Coding` because energy and acousticness became more important than mood.
-
-For Deep Intense Rock, `Gym Hero` dropped from 64.00 to 39.00 because its intense mood no longer earned points.
-
-For Conflicting Classical Workout, `Iron Pulse` dropped out of the top five because its aggressive mood had previously contributed 25 points.
-
-Removing mood made the recommendations more dependent on genre, energy, and acousticness. The results were different, but they were less aligned with the emotional experience requested by the user.
-
-After completing the experiment, I restored the original mood weight to 25 points and reran the automated tests. Both tests passed.
+This showed that the model can produce a mathematically consistent compromise that still feels imperfect to a person.
 
 ---
 
-## 8. Future Work
+## 9. Experiments
 
-A future version could give partial credit to related genres instead of requiring exact text matches. For example, `indie pop` could receive some genre points for a `pop` profile.
+### Mood removal
 
-The system could use tempo, valence, and danceability, which are already stored in the dataset.
+I temporarily changed the mood weight to zero.
 
-Additional improvements could include:
+Songs that depended on a mood match dropped in the ranking. This showed that mood was a meaningful signal rather than decorative metadata.
 
-- Supporting multiple favorite genres and moods
-- Allowing users to control feature weights
-- Creating Genre-First, Mood-First, and Energy-First modes
-- Penalizing repeated artists
-- Rewarding genre and mood diversity
-- Adding a discovery mode
-- Learning from likes, skips, and replays
-- Expanding and balancing the dataset
-- Extracting feature values from real audio
-- Using context such as activity or time of day
+The original weight was restored after the experiment.
 
-A diversity rule could reserve one recommendation for a related but unfamiliar genre. This could reduce filter bubbles and help listeners discover new music.
+### Strategy comparison
+
+I ran the same profile under balanced, genre-first, mood-first, and energy-first modes.
+
+The scores changed because each strategy treated the features differently.
+
+Genre-first made exact genre matches harder to overcome. Mood-first favored emotional alignment. Energy-first allowed songs from different genres to compete when their energy was close to the target.
+
+### Diversity comparison
+
+I compared results with diversity enabled and disabled.
+
+With diversity enabled, repeated artists and genres received penalties. This could move a different artist higher in the list.
+
+The explanation showed the exact penalty, making the reranking transparent.
 
 ---
 
-## 9. Personal Reflection
+## 10. Observed Behavior and Biases
 
-My biggest learning moment was seeing how strongly the feature weights controlled the recommendations. The system did not understand music in a human way. It only followed the scoring rules I gave it.
+### Exact-label bias
 
-I was surprised that a simple weighted formula could still produce results that felt personalized. The High-Energy Pop and Chill Lofi profiles produced very different rankings even though the program used the same song catalog.
+`pop` and `indie pop` are treated as different labels.
 
-AI tools helped me brainstorm the scoring formula, expand the dataset, write the CSV-loading logic, format the terminal output, and identify possible edge cases. They also helped me compare collaborative filtering with content-based filtering.
+The system does not know that related genres may share musical qualities.
 
-I still needed to double-check the AI-generated work. I verified that the CSV contained 20 valid songs, checked that numerical values were converted correctly, ran the automated tests, and reviewed the score calculations manually.
+### Small-data bias
 
-The mood-removal experiment was an important example. My first attempt did not actually remove the mood weight because it had already been restored to 25. I checked the terminal output, noticed that mood matches were still earning points, corrected the experiment, and ran it again.
+Most genres have one example. A genre match can therefore make one song dominate that category.
 
-If I continued this project, I would add partial matching for related genres, use tempo and danceability in the score, and add a diversity rule that limits repeated artists. I would also allow users to choose between Genre-First, Mood-First, and Energy-First ranking modes.
+### Manual-feature bias
+
+The attribute values were created manually. Different values could change the rankings.
+
+### Weight bias
+
+Weights express the designer's priorities. A score may appear objective even though the weights are selected by a person.
+
+### Popularity bias
+
+Popularity is one scoring feature. A user who targets high popularity may receive more mainstream songs.
+
+### Filter-bubble risk
+
+Content-based systems can repeatedly recommend what a user already likes.
+
+The diversity component reduces repetition, but it does not eliminate filter bubbles.
+
+### Context limitations
+
+The system does not understand:
+
+- Lyrics
+- Language
+- Culture
+- Time of day
+- Activity
+- Social setting
+- Long-term listening history
+- Changes in taste
+- Why the user requested a particular mood
+
+---
+
+## 11. Strengths
+
+- The CSV loads with validation.
+- All scores are numeric and deterministic.
+- Four user profiles work without errors.
+- Four ranking modes are selectable.
+- Five new attributes affect scoring.
+- Every score has an explanation.
+- Diversity penalties are visible.
+- Terminal tables improve readability.
+- Tests cover core and stretch features.
+- The code preserves both object-oriented and functional interfaces.
+
+---
+
+## 12. Ideas for Improvement
+
+1. Add partial credit for related genres and moods.
+2. Learn weights from real user feedback.
+3. Expand the catalog with balanced genre coverage.
+4. Extract features from real audio.
+5. Add language and lyrical themes.
+6. Let users control diversity strength.
+7. Add a novelty preference.
+8. Measure recommendation quality with user studies.
+9. Compare the recommender with collaborative filtering.
+10. Add persistent likes, skips, and replay history.
+
+---
+
+## 13. Personal Reflection
+
+My biggest learning moment was seeing how strongly weights controlled the rankings.
+
+The model does not understand music the way a person does. It follows rules and calculates similarities.
+
+I was surprised that a simple weighted formula could still feel personalized. Different profiles produced clearly different recommendations from the same catalog.
+
+AI tools helped me brainstorm features, scoring formulas, design patterns, diversity logic, tests, and documentation.
+
+I still needed to review the generated work. I checked the CSV ranges, confirmed Python types, verified that weights totaled 100, ran multiple profiles, compared modes, inspected penalties, and ran the tests.
+
+The mood-removal experiment was a useful reminder that output must be checked. The first attempt restored the weight too early. The terminal explanation revealed that mood points were still being awarded, so I corrected the experiment.
+
+If I continued the project, I would use real audio features, learn from user feedback, add related-genre similarity, and test whether users actually prefer the diverse reranked results.
