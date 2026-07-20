@@ -8,20 +8,28 @@ VibeRank is a small content-based music recommendation simulation that ranks son
 
 ---
 
-## 2. Intended Use
+## 2. Goal, Intended Use, and Non-Intended Use
 
-VibeRank is designed for classroom exploration of how recommendation systems transform structured data into personalized predictions.
+### Goal / Task
 
-The system recommends fictional songs by comparing their musical attributes with a user profile. It assumes that the listener can describe their current preferences using:
+VibeRank predicts which songs may best match a user's current music preferences. It compares each song with the user's favorite genre, favorite mood, target energy, and acoustic preference.
 
-- One favorite genre
-- One favorite mood
-- A target energy level
-- An acoustic or non-acoustic preference
+### Intended Use
 
-This project is not intended for production use or for making complete claims about a person's musical identity. Real listeners may enjoy multiple genres, change preferences depending on context, or want music that is intentionally different from their usual taste.
+VibeRank is designed for classroom exploration. It demonstrates how a recommendation system converts data into scores and ranked results.
 
----
+It can be used to:
+
+- Test different user profiles
+- Compare recommendation results
+- Study how feature weights affect rankings
+- Explore bias and filter bubbles
+
+### Non-Intended Use
+
+VibeRank should not be used as a real commercial music recommendation service. It should not be used to make strong claims about a person's complete musical taste.
+
+The dataset is small and fictional. The system does not learn from real listening behavior, and it cannot understand personal, cultural, or emotional context.
 
 ## 3. How the Model Works
 
@@ -383,8 +391,14 @@ A diversity rule could reserve one recommendation for a related but unfamiliar g
 
 ## 9. Personal Reflection
 
-This project showed me that recommendation systems do not directly know whether a song is good. They turn selected features into numerical scores and rank the results according to rules created by the designer.
+My biggest learning moment was seeing how strongly the feature weights controlled the recommendations. The system did not understand music in a human way. It only followed the scoring rules I gave it.
 
-The experiments showed that feature weights act like hidden priorities. A recommendation can be mathematically correct while still feeling wrong to a real listener.
+I was surprised that a simple weighted formula could still produce results that felt personalized. The High-Energy Pop and Chill Lofi profiles produced very different rankings even though the program used the same song catalog.
 
-I was surprised by how much removing one feature changed the rankings. This helped me understand why real recommendation systems require larger datasets, user feedback, multiple ranking signals, diversity controls, and regular evaluation for bias.
+AI tools helped me brainstorm the scoring formula, expand the dataset, write the CSV-loading logic, format the terminal output, and identify possible edge cases. They also helped me compare collaborative filtering with content-based filtering.
+
+I still needed to double-check the AI-generated work. I verified that the CSV contained 20 valid songs, checked that numerical values were converted correctly, ran the automated tests, and reviewed the score calculations manually.
+
+The mood-removal experiment was an important example. My first attempt did not actually remove the mood weight because it had already been restored to 25. I checked the terminal output, noticed that mood matches were still earning points, corrected the experiment, and ran it again.
+
+If I continued this project, I would add partial matching for related genres, use tempo and danceability in the score, and add a diversity rule that limits repeated artists. I would also allow users to choose between Genre-First, Mood-First, and Energy-First ranking modes.
