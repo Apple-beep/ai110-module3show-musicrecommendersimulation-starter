@@ -322,21 +322,40 @@ Additional tests can be added in `tests/test_recommender.py`.
 
 ## Sample Recommendation Output
 
-This section will be completed after the recommendation system is implemented.
+The following recommendations were generated for a user who prefers happy, high-energy pop music with non-acoustic production.
 
 ```text
-User profile: genre=pop, mood=happy, target_energy=0.80
+Loaded songs: 20
 
-Recommendations:
-1. Song title - Score: ...
-   Reason: ...
+User profile
+------------
+Favorite genre: pop
+Favorite mood: happy
+Target energy: 0.80
+Likes acoustic: False
 
-2. Song title - Score: ...
-   Reason: ...
+Top recommendations
+===================
 
-3. Song title - Score: ...
-   Reason: ...
-```
+1. Sunrise City by Neon Echo
+   Score: 96.80/100.00
+   Reasons: genre match: pop (+35.00); mood match: happy (+25.00); energy similarity 0.98 (+24.50); non-acoustic preference (+12.30)
+
+2. Gym Hero by Max Pulse
+   Score: 71.00/100.00
+   Reasons: genre match: pop (+35.00); mood mismatch: intense (+0.00); energy similarity 0.87 (+21.75); non-acoustic preference (+14.25)
+
+3. Rooftop Lights by Indigo Parade
+   Score: 58.75/100.00
+   Reasons: genre mismatch: indie pop (+0.00); mood match: happy (+25.00); energy similarity 0.96 (+24.00); non-acoustic preference (+9.75)
+
+4. City Cipher by Rhyme District
+   Score: 37.30/100.00
+   Reasons: genre mismatch: hip-hop (+0.00); mood mismatch: confident (+0.00); energy similarity 0.94 (+23.50); non-acoustic preference (+13.80)
+
+5. Electric Horizon by Nova Circuit
+   Score: 35.80/100.00
+   Reasons: genre mismatch: edm (+0.00); mood mismatch: euphoric (+0.00); energy similarity 0.85 (+21.25); non-acoustic preference (+14.55)
 
 **Screenshot or video:** To be added after implementation.
 
