@@ -2,32 +2,280 @@
 
 ## Project Summary
 
-In this project you will build and explain a small music recommender system.
+This project simulates a small content-based music recommendation system. It represents songs using structured features such as genre, mood, energy, tempo, valence, danceability, and acousticness. It also represents a listener's musical taste using a user profile.
 
-Your goal is to:
-
-- Represent songs and a user "taste profile" as data
-- Design a scoring rule that turns that data into recommendations
-- Evaluate what your system gets right and wrong
-- Reflect on how this mirrors real world AI recommenders
-
-Replace this paragraph with your own summary of what your version does.
+The recommender compares each song with the user's preferences, calculates a weighted relevance score, ranks all songs from the strongest match to the weakest match, and returns the top recommendations. The project demonstrates how recommendation systems transform input data and user preferences into personalized predictions.
 
 ---
 
 ## How The System Works
 
-Explain your design in plain language.
+### How Real Recommendation Systems Work
 
-Some prompts to answer:
+Real-world platforms such as Spotify, YouTube, and TikTok collect information about users and available content to predict what each user may enjoy next.
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+User behavior data may include:
 
-You can include a simple diagram or bullet list if helpful.
+- Likes
+- Skips
+- Replays
+- Listening time
+- Playlist additions
+- Searches
+- Shares
+- Following an artist
+- Previously played songs
+
+Content data may include:
+
+- Genre
+- Mood
+- Energy
+- Tempo
+- Artist
+- Danceability
+- Acousticness
+- Audio characteristics
+
+Recommendation systems commonly use collaborative filtering, content-based filtering, or a combination of both.
+
+#### Collaborative Filtering
+
+Collaborative filtering uses behavior from many users. It identifies users with similar listening patterns and recommends songs that similar listeners enjoyed.
+
+For example, if two users listen to many of the same songs, the system may recommend a song that one user liked but the other user has not heard.
+
+Collaborative filtering depends mainly on user interactions rather than directly analyzing song characteristics.
+
+#### Content-Based Filtering
+
+Content-based filtering compares song attributes with an individual user's preferences.
+
+For example, if a user prefers happy pop songs with high energy, the system searches for songs whose genre, mood, and energy closely match those preferences.
+
+This project uses content-based filtering because it can generate recommendations using song features and one user profile without requiring behavior data from thousands of users.
+
+### Recommendation Process
+
+The system separates the recommendation process into four main parts:
+
+1. **Input data:** The song dataset describes all available songs.
+2. **User preferences:** The user profile describes the listener's musical taste.
+3. **Scoring rule:** The recommender calculates how well one song matches the user.
+4. **Ranking rule:** The recommender scores every song, sorts them from highest to lowest, and returns the top results.
+
+A simplified flow of the system is:
+
+```text
+Song Dataset + User Profile
+            |
+            v
+     Score Every Song
+            |
+            v
+ Sort Songs by Score
+            |
+            v
+Return Top Recommendations
+```
+
+### Song Features
+
+Each `Song` object uses the following features:
+
+- `id`: A unique identifier for the song
+- `title`: The name of the song
+- `artist`: The artist who created or performed the song
+- `genre`: The broad musical category
+- `mood`: The emotional feeling associated with the song
+- `energy`: The intensity of the song from 0.0 to 1.0
+- `tempo_bpm`: The speed of the song in beats per minute
+- `valence`: The musical positivity of the song from 0.0 to 1.0
+- `danceability`: How suitable the song is for dancing
+- `acousticness`: How strongly the song contains acoustic qualities
+
+The starter dataset currently contains 10 songs. Its genres include pop, lofi, rock, ambient, jazz, synthwave, and indie pop.
+
+The first version of the recommender will focus on:
+
+- Genre
+- Mood
+- Energy
+- Acousticness
+
+Tempo, valence, and danceability can later be added to alternative ranking modes.
+
+### User Profile Features
+
+Each `UserProfile` stores:
+
+- `favorite_genre`: The user's preferred musical genre
+- `favorite_mood`: The user's preferred emotional mood
+- `target_energy`: The user's desired song energy from 0.0 to 1.0
+- `likes_acoustic`: Whether the user prefers songs with acoustic qualities
+
+The song data and user preferences are kept separate. Song data describes the available content, while the user profile describes what the listener currently wants.
+
+### Algorithm Recipe
+
+Each song will receive a score out of 100 points.
+
+| Feature | Maximum Points |
+|---|---:|
+| Genre match | 35 |
+| Mood match | 25 |
+| Energy similarity | 25 |
+| Acoustic preference | 15 |
+| **Total** | **100** |
+
+#### Genre Score
+
+A song receives 35 points when its genre matches the user's favorite genre.
+
+```text
+If song genre matches favorite genre:
+    genre score = 35
+Otherwise:
+    genre score = 0
+```
+
+Genre receives the largest weight because it represents the user's broad musical preference.
+
+#### Mood Score
+
+A song receives 25 points when its mood matches the user's favorite mood.
+
+```text
+If song mood matches favorite mood:
+    mood score = 25
+Otherwise:
+    mood score = 0
+```
+
+Mood helps represent the emotional experience the user wants.
+
+#### Energy Similarity Score
+
+Energy is a numerical feature, so the recommender rewards songs that are close to the user's target energy instead of simply rewarding songs with higher energy.
+
+```text
+energy difference = absolute value of(song energy - target energy)
+
+energy similarity = 1 - energy difference
+
+energy score = energy similarity × 25
+```
+
+For example, suppose the user's target energy is `0.80` and a song has an energy value of `0.75`.
+
+```text
+energy difference = |0.75 - 0.80|
+energy difference = 0.05
+
+energy similarity = 1 - 0.05
+energy similarity = 0.95
+
+energy score = 0.95 × 25
+energy score = 23.75
+```
+
+The song receives 23.75 out of 25 energy points because its energy is very close to the user's preference.
+
+#### Acoustic Preference Score
+
+If the user likes acoustic music, songs with higher acousticness receive more points.
+
+```text
+acoustic score = song acousticness × 15
+```
+
+If the user does not prefer acoustic music, songs with lower acousticness receive more points.
+
+```text
+acoustic score = (1 - song acousticness) × 15
+```
+
+This allows the system to reward either acoustic or non-acoustic songs depending on the user's preference.
+
+### Scoring Rule Versus Ranking Rule
+
+The scoring rule and ranking rule have different responsibilities.
+
+The scoring rule evaluates one song:
+
+```text
+How well does this song match the user?
+```
+
+The ranking rule evaluates the full catalog:
+
+```text
+Which songs have the highest scores?
+```
+
+The scoring function calculates a numeric score for each song. The recommendation function applies that scoring function to every song, sorts the songs by score, and selects the top results.
+
+Keeping these responsibilities separate makes the program easier to understand, test, and modify. The scoring formula can change without rewriting the entire ranking process.
+
+### Recommendation Selection
+
+The recommender will follow these steps:
+
+1. Load songs from `data/songs.csv`.
+2. Read the user's preferences.
+3. Calculate a score for each song.
+4. Record the reasons each song earned points.
+5. Sort all songs from highest score to lowest score.
+6. Return the top three or five songs.
+7. Display each recommendation with its score and explanation.
+
+A recommendation explanation might look like:
+
+```text
+Recommended because the song matches your favorite genre,
+matches your preferred mood, and has energy close to your target.
+```
+
+### Dataset Observations
+
+The starter dataset includes the following attributes:
+
+- Genre and mood are categorical features.
+- Energy, valence, danceability, and acousticness use values from 0.0 to 1.0.
+- Tempo is measured in beats per minute.
+- The current catalog contains 10 songs.
+
+The dataset is not evenly balanced. Lofi appears more often than most genres, and chill appears more often than most moods. Some genres and moods only appear once.
+
+This imbalance could cause certain musical styles to appear more frequently in recommendations simply because the dataset contains more examples of them.
+
+### Bias and Filter-Bubble Risk
+
+A content-based recommender can create a filter bubble by repeatedly suggesting music that closely matches what the user already likes.
+
+For example, a user who selects pop as their favorite genre may continue receiving pop recommendations and may rarely discover jazz, ambient, rock, or other genres.
+
+Bias can also appear because:
+
+- The dataset is small.
+- Some genres have more songs than others.
+- Mood labels are simplified.
+- The system does not understand lyrics or language.
+- The system does not consider cultural context.
+- The user profile represents only a few preferences.
+- Musical taste may change depending on activity, location, or time.
+
+Future versions can reduce these problems by:
+
+- Adding more songs
+- Balancing genres and moods
+- Limiting repeated artists
+- Rewarding variety in the top results
+- Adding a discovery mode
+- Allowing multiple favorite genres
+- Learning from likes and skips
+- Using tempo, valence, and danceability
+- Occasionally recommending a relevant song outside the user's usual preferences
 
 ---
 
@@ -35,24 +283,30 @@ You can include a simple diagram or bullet list if helpful.
 
 ### Setup
 
-1. Create a virtual environment (optional but recommended):
+1. Create a virtual environment. This step is optional but recommended.
 
    ```bash
    python -m venv .venv
-   source .venv/bin/activate      # Mac or Linux
-   .venv\Scripts\activate         # Windows
+   source .venv/bin/activate
+   ```
 
-2. Install dependencies
+   On Windows:
 
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   .venv\Scripts\activate
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 3. Run the app:
 
-```bash
-python -m src.main
-```
+   ```bash
+   python -m src.main
+   ```
 
 ### Running Tests
 
@@ -62,48 +316,63 @@ Run the starter tests with:
 pytest
 ```
 
-You can add more tests in `tests/test_recommender.py`.
+Additional tests can be added in `tests/test_recommender.py`.
 
 ---
 
 ## Sample Recommendation Output
 
-Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
+This section will be completed after the recommendation system is implemented.
 
-```
-# e.g.:
-# User profile: genre=indie, mood=chill, energy=low
-# Recommendations:
-#   1. ...
-#   2. ...
-#   3. ...
+```text
+User profile: genre=pop, mood=happy, target_energy=0.80
+
+Recommendations:
+1. Song title - Score: ...
+   Reason: ...
+
+2. Song title - Score: ...
+   Reason: ...
+
+3. Song title - Score: ...
+   Reason: ...
 ```
 
-**Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
+**Screenshot or video:** To be added after implementation.
 
 ---
 
 ## Experiments You Tried
 
-Use this section to document the experiments you ran. For example:
+This section will be completed after testing the recommender with multiple user profiles and scoring weights.
 
-- What happened when you changed the weight on genre from 2.0 to 0.5
-- What happened when you added tempo or valence to the score
-- How did your system behave for different types of users
+Planned experiments include:
+
+- Comparing high-energy and low-energy profiles
+- Changing the genre weight
+- Changing the mood weight
+- Adding tempo to the score
+- Adding valence and danceability
+- Testing acoustic and non-acoustic preferences
+- Comparing results across different ranking modes
 
 ---
 
 ## Limitations and Risks
 
-Summarize some limitations of your recommender.
+The current design has several limitations:
 
-Examples:
+- It uses a very small song catalog.
+- The starter dataset contains only 10 songs.
+- Some genres and moods are underrepresented.
+- It does not understand lyrics or language.
+- It does not learn automatically from user behavior.
+- It assumes the user's preferences remain fixed.
+- It may repeatedly recommend similar songs.
+- It may over-favor genres with more entries in the dataset.
+- Its feature weights are selected manually.
 
-- It only works on a tiny catalog
-- It does not understand lyrics or language
-- It might over favor one genre or mood
-
-You will go deeper on this in your model card.
+These limitations will be discussed in greater detail in the model card.
 
 ---
 
@@ -113,10 +382,4 @@ Read and complete `model_card.md`:
 
 [**Model Card**](model_card.md)
 
-Write 1 to 2 paragraphs here about what you learned:
-
-- about how recommenders turn data into predictions
-- about where bias or unfairness could show up in systems like this
-
-
-
+The final reflection will be completed after implementing and testing the recommender. It will discuss how structured data, scoring rules, and ranking algorithms turn song attributes into predictions. It will also examine how limited datasets and manually selected weights can introduce bias or reduce musical diversity.
