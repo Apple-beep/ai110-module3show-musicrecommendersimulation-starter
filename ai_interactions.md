@@ -10,19 +10,28 @@
 
 **What task did you give the agent?**
 
-<!-- Describe the goal you asked the agent to accomplish -->
+> I asked the AI assistant to examine the starter song dataset and generate 10 additional fictional songs while preserving the existing CSV structure. The goal was to increase the catalog from 10 to 20 songs and introduce genres and moods that were missing from the starter data.
+
 
 **Prompts used:**
 
-<!-- Paste the key prompts you gave the agent -->
+> The attached songs.csv contains 10 fictional songs with the headers id, title, artist, genre, mood, energy, tempo_bpm, valence, danceability, and acousticness. Generate 10 additional fictional songs in valid CSV format. Continue the IDs from 11 through 20, preserve the headers, introduce missing genres and moods, keep normalized features between 0.0 and 1.0, and use realistic tempo values.
 
 **What did the agent generate or change?**
 
-<!-- List the files edited, code generated, or commands run -->
+> The AI proposed 10 new songs representing hip-hop, EDM, classical, folk, R&B, metal, reggae, country, Latin, and blues. It also proposed new moods such as confident, euphoric, peaceful, romantic, aggressive, joyful, nostalgic, celebratory, and sad.
 
 **What did you verify or fix manually?**
 
-<!-- Describe anything the agent got wrong or that required human review -->
+I verified that:
+
+- Every song had exactly 10 CSV fields.
+- IDs were unique and continued from 11 through 20.
+- Energy, valence, danceability, and acousticness stayed between 0.0 and 1.0.
+- Tempo values were positive and reasonable.
+- Titles and artist names did not contain unescaped commas.
+- New genres and moods expanded the diversity of the catalog.
+- The CSV loaded successfully using Python's `csv.DictReader`.
 
 ---
 
